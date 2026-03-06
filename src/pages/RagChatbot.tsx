@@ -670,13 +670,23 @@ export default function RagChatbot() {
                   <div className="w-16 h-16 rounded-full bg-slate-100 flex items-center justify-center">
                     <Bot className="w-8 h-8 text-slate-400" />
                   </div>
-                  <div className="text-center max-w-sm px-4">
+                  <div className="text-center max-w-md px-4">
                     <h4 className="text-base font-medium text-slate-700 mb-2">
                       {fileId ? t('rag.readyToHelp', 'Asistente pronto para ajudar') : t('rag.welcomeBot', 'Bem-vindo ao Chat Documental')}
                     </h4>
-                    <p className="text-sm leading-relaxed text-slate-500">
-                      {fileId ? t('rag.askDocument', 'Faça perguntas sobre o documento. A IA responde apenas com base no que está indexado no arquivo.') : t('rag.selectToChat', 'Escolha um documento na lista ao lado para começar.')}
-                    </p>
+                    {fileId ? (
+                      <p className="text-sm leading-relaxed text-slate-500">
+                        {t('rag.askDocument', 'Faça perguntas sobre o documento. A IA responde apenas com base no que está indexado no arquivo.')}
+                      </p>
+                    ) : documents.length === 0 ? (
+                      <p className="text-sm leading-relaxed text-slate-500">
+                        {t('rag.noDocumentYet', 'Ainda não há documentos na base. Vá na aba Documentos, envie um arquivo ou cole texto. Depois volte na aba Chat e selecione o documento para começar a conversar.')}
+                      </p>
+                    ) : (
+                      <p className="text-sm leading-relaxed text-slate-500">
+                        {t('rag.selectDocumentToUnlock', 'Para enviar perguntas, selecione um documento na lista (ou Toda a Base de Conhecimento). A caixa de pergunta só é habilitada depois de escolher um documento.')}
+                      </p>
+                    )}
                   </div>
 
                   {fileId && (
@@ -843,6 +853,16 @@ export default function RagChatbot() {
 
             {/* Chat Input Area */}
             <div className="shrink-0 p-3 sm:p-4 bg-white border-t border-slate-200">
+              {!fileId && (
+                <div id="rag-input-hint" className="mb-3 px-3 py-2.5 rounded-xl bg-amber-50 border border-amber-200/80 flex items-start gap-2" role="status">
+                  <BookOpen className="w-4 h-4 text-amber-600 shrink-0 mt-0.5" />
+                  <p className="text-sm text-amber-800">
+                    {documents.length === 0
+                      ? t('rag.hintNoDocs', 'Nenhum documento ainda. Abra a aba Documentos, adicione um arquivo ou cole texto, depois volte aqui e selecione-o para conversar.')
+                      : t('rag.hintSelectDoc', 'Selecione um documento na aba Documentos (ou Toda a Base de Conhecimento) para habilitar o envio de perguntas.')}
+                  </p>
+                </div>
+              )}
               {fileId && (
                 <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 sm:gap-3 mb-2 sm:mb-3">
                   <div className="flex flex-wrap items-center gap-2">
@@ -877,11 +897,13 @@ export default function RagChatbot() {
               )}
               <div className="relative flex items-end gap-2 sm:gap-3">
                 <Textarea
-                  placeholder={t('rag.placeholder', 'Digite sua pergunta sobre o documento…')}
-                  className="min-h-[48px] sm:min-h-[56px] max-h-[200px] resize-y bg-slate-50 border-slate-300 focus:border-blue-500 pr-12 text-base sm:text-[15px] py-3 sm:py-4 rounded-xl sm:rounded-2xl shadow-inner scrollbar-thin"
+                  placeholder={fileId ? t('rag.placeholder', 'Digite sua pergunta sobre o documento…') : t('rag.placeholderDisabled', 'Selecione um documento na aba Documentos para habilitar…')}
+                  className={`min-h-[48px] sm:min-h-[56px] max-h-[200px] resize-y pr-12 text-base sm:text-[15px] py-3 sm:py-4 rounded-xl sm:rounded-2xl shadow-inner scrollbar-thin ${fileId ? 'bg-slate-50 border-slate-300 focus:border-blue-500' : 'bg-slate-100 border-slate-200 text-slate-500 cursor-not-allowed'}`}
                   value={question}
                   onChange={(e) => setQuestion(e.target.value)}
                   onKeyDown={handleKeyDown}
+                  disabled={!fileId}
+                  aria-describedby={!fileId ? 'rag-input-hint' : undefined}
                 />
                 <div className="absolute right-[3.25rem] bottom-2.5 sm:bottom-3 flex items-center">
                   <Button

@@ -83,7 +83,12 @@
         "clearInput": "Limpar pergunta",
         "stopListening": "Parar gravação",
         "startListening": "Digitar por voz",
-        "inputHint": "Enter envia · Shift+Enter nova linha · Confira sempre os trechos citados para conferir a resposta."
+        "inputHint": "Enter envia · Shift+Enter nova linha · Confira sempre os trechos citados para conferir a resposta.",
+        "noDocumentYet": "Ainda não há documentos na base. Vá na aba Documentos, envie um arquivo ou cole texto. Depois volte na aba Chat e selecione o documento para começar a conversar.",
+        "selectDocumentToUnlock": "Para enviar perguntas, selecione um documento na lista (ou Toda a Base de Conhecimento). A caixa de pergunta só é habilitada depois de escolher um documento.",
+        "hintNoDocs": "Nenhum documento ainda. Abra a aba Documentos, adicione um arquivo ou cole texto, depois volte aqui e selecione-o para conversar.",
+        "hintSelectDoc": "Selecione um documento na aba Documentos (ou Toda a Base de Conhecimento) para habilitar o envio de perguntas.",
+        "placeholderDisabled": "Selecione um documento na aba Documentos para habilitar…"
     },
     "ticket": {
         "title": "Classificador de Tickets",

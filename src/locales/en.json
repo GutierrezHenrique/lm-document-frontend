@@ -83,7 +83,12 @@
         "clearInput": "Clear input",
         "stopListening": "Stop recording",
         "startListening": "Voice typing",
-        "inputHint": "Enter sends · Shift+Enter new line · Always verify the cited sources."
+        "inputHint": "Enter sends · Shift+Enter new line · Always verify the cited sources.",
+        "noDocumentYet": "There are no documents in the base yet. Go to the Documents tab, upload a file or paste text. Then come back to the Chat tab and select the document to start chatting.",
+        "selectDocumentToUnlock": "To send questions, select a document from the list (or Entire Knowledge Base). The question box is only enabled after you choose a document.",
+        "hintNoDocs": "No documents yet. Open the Documents tab, add a file or paste text, then come back here and select it to chat.",
+        "hintSelectDoc": "Select a document in the Documents tab (or Entire Knowledge Base) to enable sending questions.",
+        "placeholderDisabled": "Select a document in the Documents tab to enable…"
     },
     "ticket": {
         "title": "Ticket Classifier",
