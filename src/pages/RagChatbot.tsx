@@ -31,6 +31,8 @@ type Message = {
   role: 'user' | 'assistant';
   content: string;
   snippets?: string[];
+  /** When querying entire base (fileId 'all'), source fileId per snippet for PDF links */
+  snippetSourceFileIds?: string[];
   isThinking?: boolean;
   feedback?: 'up' | 'down' | null;
 };
@@ -265,6 +267,7 @@ export default function RagChatbot() {
               ...m,
               content: data.answer,
               snippets: data.snippets,
+              snippetSourceFileIds: data.snippetSourceFileIds,
               isThinking: false
             } : m)
           );
@@ -808,15 +811,18 @@ export default function RagChatbot() {
                                               {pageNum && fileId && (() => {
                                                 const cleanText = s.replace(/^\[Page \d+\]\s*/, '').trim();
                                                 const searchPhrase = cleanText.split(/\s+/).slice(0, 6).join(' ').replace(/[^\w\s]/gi, '');
+                                                const sourceFileId = fileId === 'all' ? (m.snippetSourceFileIds?.[i] ?? '') : fileId;
+                                                const hasLink = !!sourceFileId;
+                                                const href = hasLink ? `${apiBaseUrl}/uploads/${sourceFileId}.pdf#page=${pageNum}&search=${encodeURIComponent(searchPhrase)}` : '#';
 
                                                 return (
                                                   <a
-                                                    href={fileId === 'all' ? '#' : `${apiBaseUrl}/uploads/${fileId}.pdf#page=${pageNum}&search=${encodeURIComponent(searchPhrase)}`}
-                                                    target={fileId === 'all' ? undefined : "_blank"}
-                                                    rel="noopener noreferrer"
+                                                    href={href}
+                                                    target={hasLink ? '_blank' : undefined}
+                                                    rel={hasLink ? 'noopener noreferrer' : undefined}
                                                     className="flex items-center gap-1.5 text-[10px] uppercase font-bold text-blue-400 bg-blue-500/10 hover:bg-blue-500/20 px-2 py-1 rounded transition-colors"
-                                                    title={fileId === 'all' ? t('rag.page', 'Página {{num}}', { num: pageNum }) : t('rag.openPage', 'Abrir documento na página {{num}}', { num: pageNum })}
-                                                    onClick={(e) => { if (fileId === 'all') e.preventDefault(); }}
+                                                    title={hasLink ? t('rag.openPage', 'Abrir documento na página {{num}}', { num: pageNum }) : t('rag.page', 'Pág.') + ' ' + pageNum}
+                                                    onClick={(e) => { if (!hasLink) e.preventDefault(); }}
                                                   >
                                                     <Bot className="w-3 h-3" /> {t('rag.page', 'Pág.')} {pageNum}
                                                   </a>

@@ -61,7 +61,7 @@ export const api = {
         data: { fileId, text },
       }),
     query: (fileId: string, question: string, topK?: number, conversationId?: string, customInstructions?: string) =>
-      request<{ answer: string; snippets: string[]; conversationId: string }>('/rag/query', {
+      request<{ answer: string; snippets: string[]; conversationId: string; snippetSourceFileIds?: string[] }>('/rag/query', {
         method: 'POST',
         data: { fileId, question, topK, conversationId, customInstructions },
       }),
