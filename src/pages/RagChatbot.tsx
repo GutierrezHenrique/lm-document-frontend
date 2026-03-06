@@ -57,6 +57,8 @@ export default function RagChatbot() {
   const { data: savedMessages, isSuccess: savedMessagesLoaded } = useRagConversationMessages(conversationId);
   const { data: promptPreference, isSuccess: promptPreferenceLoaded } = useRagPromptPreference(fileId);
   const [customInstructionsOpen, setCustomInstructionsOpen] = useState(false);
+  /** No mobile: alterna entre ver Chat ou Documentos */
+  const [mobileTab, setMobileTab] = useState<'chat' | 'documents'>('chat');
 
   const [isListening, setIsListening] = useState(false);
   const recognitionRef = useRef<any>(null);
@@ -336,10 +338,33 @@ export default function RagChatbot() {
         description={t('rag.subtitle', 'Envie documentos ou cole texto para a IA aprender. Depois faça perguntas e receba respostas baseadas só no que está nos seus arquivos.')}
       />
 
+      {/* Abas no mobile: Chat | Documentos */}
+      <div className="lg:hidden flex rounded-xl bg-slate-200/80 p-1 gap-1 mb-2">
+        <button
+          type="button"
+          onClick={() => setMobileTab('chat')}
+          className={`flex-1 py-3 px-4 rounded-lg text-sm font-medium transition-all touch-manipulation min-h-[44px] flex items-center justify-center gap-2 ${mobileTab === 'chat' ? 'bg-white text-slate-900 shadow-sm' : 'text-slate-600 hover:text-slate-900'}`}
+        >
+          <Bot className="w-4 h-4 shrink-0" />
+          {t('nav.ragChatbot', 'Chat')}
+        </button>
+        <button
+          type="button"
+          onClick={() => setMobileTab('documents')}
+          className={`flex-1 py-3 px-4 rounded-lg text-sm font-medium transition-all touch-manipulation min-h-[44px] flex items-center justify-center gap-2 ${mobileTab === 'documents' ? 'bg-white text-slate-900 shadow-sm' : 'text-slate-600 hover:text-slate-900'}`}
+        >
+          <BookOpen className="w-4 h-4 shrink-0" />
+          {t('rag.documentsTab', 'Documentos')}
+        </button>
+      </div>
+
       {/* Sidebar e Chat com altura independente: cada um usa calc(100vh - ...) e scroll próprio */}
       <div className="flex-1 grid grid-cols-1 lg:grid-cols-[280px_1fr] gap-5 sm:gap-6 lg:gap-6 min-h-0 min-w-0 items-stretch">
-        {/* SIDEBAR: altura fixa própria, scroll independente */}
-        <div className="flex flex-col gap-5 min-w-0 lg:h-[calc(100vh-14rem)] lg:min-h-[320px] lg:max-h-[calc(100vh-8rem)] min-h-[280px] overflow-y-auto overflow-x-hidden pr-1 sm:pr-2 pb-6 custom-scrollbar">
+        {/* SIDEBAR: no mobile só visível na aba Documentos */}
+        <div className={`flex flex-col gap-5 min-w-0 overflow-y-auto overflow-x-hidden pr-1 sm:pr-2 pb-6 custom-scrollbar
+          ${mobileTab !== 'documents' ? 'hidden' : 'flex'} lg:flex
+          lg:h-[calc(100vh-14rem)] lg:min-h-[320px] lg:max-h-[calc(100vh-8rem)] min-h-[280px]`}
+        >
           <motion.div initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.25 }} className="shrink-0">
           <Card label={t('rag.addDocument', 'Add document for AI to learn')} className="!shadow-sm hover:!shadow-md">
             <div className="space-y-4">
@@ -530,18 +555,20 @@ export default function RagChatbot() {
           </motion.div>
         </div>
 
-        {/* MAIN AREA: Chat - altura própria, independente da sidebar */}
+        {/* MAIN AREA: Chat - no mobile só visível na aba Chat */}
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ duration: 0.2 }}
-          className="min-w-0 flex flex-col lg:h-[calc(100vh-14rem)] lg:min-h-[400px] lg:max-h-[calc(100vh-8rem)] min-h-[420px] overflow-hidden"
+          className={`min-w-0 flex flex-col overflow-hidden
+            ${mobileTab !== 'chat' ? 'hidden' : 'flex'} lg:flex
+            lg:h-[calc(100vh-14rem)] lg:min-h-[400px] lg:max-h-[calc(100vh-8rem)] min-h-[420px] sm:min-h-[480px]`}
         >
         <Card className="flex flex-col flex-1 min-h-0 min-w-0 bg-white border-slate-200/80 shadow-md p-0 overflow-hidden">
           <>
             {/* Chat Header showing active document + conversation actions */}
-            <div className="shrink-0 px-6 py-4 border-b border-slate-200 bg-white flex items-center justify-between gap-3">
-              <div className="flex items-center gap-3 min-w-0">
+            <div className="shrink-0 px-4 sm:px-6 py-3 sm:py-4 border-b border-slate-200 bg-white flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-2 sm:gap-3">
+              <div className="flex items-center gap-2 sm:gap-3 min-w-0">
                 <div className="w-8 h-8 rounded-full bg-blue-600/20 flex items-center justify-center border border-blue-500/30 shrink-0">
                   <Bot className="w-4 h-4 text-blue-400" />
                 </div>
@@ -549,34 +576,34 @@ export default function RagChatbot() {
                   <h3 className="text-sm font-semibold text-slate-800 truncate">
                     {fileId === 'all' ? t('rag.assistantActiveAll', 'Assistente Ativo (Base Completa)') : fileId ? t('rag.assistantActive', 'Assistente Ativo') : t('rag.selectDocument', 'Escolha um documento')}
                   </h3>
-                  <p className="text-xs text-slate-500 mt-0.5 truncate max-w-md">
+                  <p className="text-xs text-slate-500 mt-0.5 truncate max-w-[200px] sm:max-w-md">
                     {fileId === 'all' ? t('rag.usingDocumentAll', 'Respondendo com base em toda a Base de Conhecimento') : fileId ? t('rag.usingDocument', 'Respondendo com base em: {{name}}', { name: fileId }) : t('rag.selectToChat', 'Escolha um documento na lista ao lado para começar a conversar.')}
                   </p>
                 </div>
               </div>
               {fileId && (
-                <div className="flex items-center gap-2 shrink-0">
+                <div className="flex items-center gap-2 shrink-0 self-end sm:self-auto">
                   <Button
                     size="sm"
                     variant="ghost"
-                    className="text-slate-600 hover:text-amber-400 border border-slate-300 hover:border-amber-500/50"
+                    className="text-slate-600 hover:text-amber-400 border border-slate-300 hover:border-amber-500/50 min-h-[44px] touch-manipulation"
                     onClick={handleResetConversation}
                     disabled={createConversation.isPending}
                     title={t('rag.restartConversation', 'Reiniciar conversa (o histórico continua guardado para contexto)')}
                   >
-                    <RotateCcw className="w-4 h-4 mr-1" />
-                    {t('rag.restart', 'Reiniciar')}
+                    <RotateCcw className="w-4 h-4 sm:mr-1" />
+                    <span className="hidden sm:inline">{t('rag.restart', 'Reiniciar')}</span>
                   </Button>
                   <Button
                     size="sm"
                     variant="ghost"
-                    className="text-slate-600 hover:text-red-400 border border-slate-300 hover:border-red-500/50"
+                    className="text-slate-600 hover:text-red-400 border border-slate-300 hover:border-red-500/50 min-h-[44px] touch-manipulation"
                     onClick={handleDeleteConversation}
                     disabled={!conversationId || deleteConversation.isPending}
                     title={t('rag.deleteConversation', 'Apagar esta conversa')}
                   >
-                    <Trash2 className="w-4 h-4 mr-1" />
-                    {t('rag.delete', 'Apagar')}
+                    <Trash2 className="w-4 h-4 sm:mr-1" />
+                    <span className="hidden sm:inline">{t('rag.delete', 'Apagar')}</span>
                   </Button>
                 </div>
               )}
@@ -637,7 +664,7 @@ export default function RagChatbot() {
             )}
 
             {/* Chat Messages */}
-            <div className="flex-1 min-h-0 overflow-y-auto p-6 space-y-6 custom-scrollbar scroll-smooth">
+            <div className="flex-1 min-h-0 overflow-y-auto p-4 sm:p-6 space-y-4 sm:space-y-6 custom-scrollbar scroll-smooth">
               {messages.length === 0 ? (
                 <div className="h-full flex flex-col items-center justify-center text-slate-500 space-y-5">
                   <div className="w-16 h-16 rounded-full bg-slate-100 flex items-center justify-center">
@@ -815,10 +842,10 @@ export default function RagChatbot() {
             </div>
 
             {/* Chat Input Area */}
-            <div className="shrink-0 p-4 bg-white border-t border-slate-200">
+            <div className="shrink-0 p-3 sm:p-4 bg-white border-t border-slate-200">
               {fileId && (
-                <div className="flex items-center justify-between gap-3 mb-3">
-                  <div className="flex items-center gap-2">
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 sm:gap-3 mb-2 sm:mb-3">
+                  <div className="flex flex-wrap items-center gap-2">
                     <span className="text-xs font-medium text-slate-500">{t('rag.contextChunks', 'Quantos trechos do documento buscar')}</span>
                     <div className="flex rounded-lg border border-slate-300 overflow-hidden">
                       {[5, 10, 15, 20].map((k) => (
@@ -826,7 +853,7 @@ export default function RagChatbot() {
                           key={k}
                           type="button"
                           onClick={() => setTopK(k)}
-                          className={`px-2.5 py-1 text-xs font-medium transition-colors ${topK === k
+                          className={`min-h-[36px] min-w-[36px] px-2.5 py-1 text-xs font-medium transition-colors touch-manipulation ${topK === k
                             ? 'bg-blue-600 text-white'
                             : 'bg-slate-100 text-slate-600 hover:bg-slate-200'}`}
                         >
@@ -834,13 +861,13 @@ export default function RagChatbot() {
                         </button>
                       ))}
                     </div>
-                    <span className="text-[10px] text-slate-400">{t('rag.chunksUsed', 'mais trechos = resposta pode usar mais conteúdo')}</span>
+                    <span className="text-[10px] text-slate-400 hidden sm:inline">{t('rag.chunksUsed', 'mais trechos = resposta pode usar mais conteúdo')}</span>
                   </div>
                   {question.trim().length > 0 && (
                     <button
                       type="button"
                       onClick={() => setQuestion('')}
-                      className="p-1.5 rounded-lg text-slate-500 hover:text-red-500 hover:bg-slate-200/50 transition-colors"
+                      className="p-2.5 rounded-lg text-slate-500 hover:text-red-500 hover:bg-slate-200/50 transition-colors touch-manipulation self-start sm:self-auto min-h-[44px] min-w-[44px]"
                       title={t('rag.clearInput', 'Limpar pergunta')}
                     >
                       <X className="w-4 h-4" />
@@ -848,29 +875,29 @@ export default function RagChatbot() {
                   )}
                 </div>
               )}
-              <div className="relative flex items-end gap-3">
+              <div className="relative flex items-end gap-2 sm:gap-3">
                 <Textarea
                   placeholder={t('rag.placeholder', 'Digite sua pergunta sobre o documento…')}
-                  className="min-h-[56px] max-h-[200px] resize-y bg-slate-50 border-slate-300 focus:border-blue-500 pr-12 text-[15px] py-4 rounded-2xl shadow-inner scrollbar-thin"
+                  className="min-h-[48px] sm:min-h-[56px] max-h-[200px] resize-y bg-slate-50 border-slate-300 focus:border-blue-500 pr-12 text-base sm:text-[15px] py-3 sm:py-4 rounded-xl sm:rounded-2xl shadow-inner scrollbar-thin"
                   value={question}
                   onChange={(e) => setQuestion(e.target.value)}
                   onKeyDown={handleKeyDown}
                 />
-                <div className="absolute right-[3.25rem] bottom-3 flex items-center">
+                <div className="absolute right-[3.25rem] bottom-2.5 sm:bottom-3 flex items-center">
                   <Button
                     size="sm"
                     variant="ghost"
-                    className={`h-10 w-10 p-0 rounded-xl flex items-center justify-center transition-all ${isListening ? 'text-red-500 bg-red-50 hover:bg-red-100' : 'text-slate-400 hover:text-slate-600 hover:bg-slate-100'}`}
+                    className={`min-h-[44px] min-w-[44px] p-0 rounded-xl flex items-center justify-center transition-all touch-manipulation ${isListening ? 'text-red-500 bg-red-50 hover:bg-red-100' : 'text-slate-400 hover:text-slate-600 hover:bg-slate-100'}`}
                     onClick={toggleDictation}
                     title={isListening ? t('rag.stopListening', 'Parar gravação') : t('rag.startListening', 'Digitar por voz')}
                   >
                     <Mic className={`w-5 h-5 ${isListening ? 'animate-pulse' : ''}`} />
                   </Button>
                 </div>
-                <div className="absolute right-3 bottom-3 flex items-center">
+                <div className="absolute right-2 sm:right-3 bottom-2.5 sm:bottom-3 flex items-center">
                   <Button
                     size="sm"
-                    className={`h-10 w-10 p-0 rounded-xl flex items-center justify-center transition-all ${canQuery
+                    className={`min-h-[44px] min-w-[44px] p-0 rounded-xl flex items-center justify-center transition-all touch-manipulation ${canQuery
                       ? 'bg-blue-600 hover:bg-blue-500 text-white shadow-md shadow-blue-500/20'
                       : 'bg-slate-100 text-slate-500 border-slate-300'
                       }`}

@@ -1,10 +1,10 @@
 {
     "nav": {
         "ragChatbot": "Chat con documentos",
-        "ticketClassifier": "Clasificador de Tickets",
-        "summarizer": "Resumidor",
-        "recommender": "Recomendador",
-        "knowledgeBase": "Base de conocimiento"
+        "knowledgeBase": "Base de conocimiento",
+        "openMenu": "Abrir menú",
+        "closeMenu": "Cerrar menú",
+        "menu": "Menú"
     },
     "appTitle": "Nexova AI",
     "language": "Idioma",
@@ -47,6 +47,7 @@
         "customInstructionsPlaceholder": "Ej: Prefiere respuestas cortas. Indica siempre el número de página.",
         "promptSaved": "Instrucciones guardadas.",
         "saveInstructions": "Guardar instrucciones",
+        "documentsTab": "Documentos",
         "indexedDocuments": "Documentos que la IA ya conoce",
         "refreshDocuments": "Actualizar lista de documentos",
         "noDocuments": "Ningún documento todavía",
