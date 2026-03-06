@@ -88,7 +88,10 @@
         "selectDocumentToUnlock": "Para enviar perguntas, selecione um documento na lista (ou Toda a Base de Conhecimento). A caixa de pergunta só é habilitada depois de escolher um documento.",
         "hintNoDocs": "Nenhum documento ainda. Abra a aba Documentos, adicione um arquivo ou cole texto, depois volte aqui e selecione-o para conversar.",
         "hintSelectDoc": "Selecione um documento na aba Documentos (ou Toda a Base de Conhecimento) para habilitar o envio de perguntas.",
-        "placeholderDisabled": "Selecione um documento na aba Documentos para habilitar…"
+        "placeholderDisabled": "Selecione um documento na aba Documentos para habilitar…",
+        "deleteDocument": "Remover documento da base e apagar arquivo",
+        "deleteDocumentConfirm": "Remover este documento da base de conhecimento e apagar o arquivo? Esta ação não pode ser desfeita.",
+        "documentDeleted": "Documento removido da base e arquivo apagado."
     },
     "ticket": {
         "title": "Classificador de Tickets",

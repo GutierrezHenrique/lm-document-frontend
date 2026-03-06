@@ -88,7 +88,10 @@
         "selectDocumentToUnlock": "Para enviar preguntas, selecciona un documento de la lista (o Toda la base de conocimiento). La caja de pregunta solo se habilita después de elegir un documento.",
         "hintNoDocs": "Ningún documento todavía. Abre la pestaña Documentos, añade un archivo o pega texto, luego vuelve aquí y selecciónalo para chatear.",
         "hintSelectDoc": "Selecciona un documento en la pestaña Documentos (o Toda la base de conocimiento) para habilitar el envío de preguntas.",
-        "placeholderDisabled": "Selecciona un documento en la pestaña Documentos para habilitar…"
+        "placeholderDisabled": "Selecciona un documento en la pestaña Documentos para habilitar…",
+        "deleteDocument": "Quitar documento de la base y eliminar archivo",
+        "deleteDocumentConfirm": "¿Quitar este documento de la base de conocimiento y eliminar el archivo? Esta acción no se puede deshacer.",
+        "documentDeleted": "Documento quitado de la base y archivo eliminado."
     },
     "ticket": {
         "title": "Clasificador de Tickets",

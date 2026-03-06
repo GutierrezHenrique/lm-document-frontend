@@ -54,7 +54,7 @@ export default function RagChatbot() {
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const { addToast } = useToast();
-  const { uploadPdf, indexText, query, createConversation, deleteConversation, savePromptPreference } = useRag();
+  const { uploadPdf, indexText, query, createConversation, deleteConversation, deleteDocument, savePromptPreference } = useRag();
   const { data: documents = [], isLoading: documentsLoading, refetch: refetchDocuments } = useRagDocuments();
   const { data: savedMessages, isSuccess: savedMessagesLoaded } = useRagConversationMessages(conversationId);
   const { data: promptPreference, isSuccess: promptPreferenceLoaded } = useRagPromptPreference(fileId);
@@ -66,6 +66,7 @@ export default function RagChatbot() {
   const recognitionRef = useRef<any>(null);
   const [loadedPrefFor, setLoadedPrefFor] = useState<string | null>(null);
   const [expandedSnippets, setExpandedSnippets] = useState<Record<string, boolean>>({});
+  const [deletingFileId, setDeletingFileId] = useState<string | null>(null);
 
   const toggleSnippets = (msgId: string) => {
     setExpandedSnippets(prev => ({ ...prev, [msgId]: !prev[msgId] }));
@@ -549,6 +550,27 @@ export default function RagChatbot() {
                           )}
                         </div>
                       </button>
+                      <button
+                        type="button"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          if (!window.confirm(t('rag.deleteDocumentConfirm', 'Remove this document from the knowledge base and delete the file? This cannot be undone.'))) return;
+                          setDeletingFileId(doc.fileId);
+                          deleteDocument.mutate(doc.fileId, {
+                            onSuccess: () => {
+                              if (fileId === doc.fileId) setFileId(null);
+                              addToast(t('rag.documentDeleted', 'Document removed from the base and file deleted.'), 'success');
+                            },
+                            onError: (err) => addToast(String(err), 'error'),
+                            onSettled: () => setDeletingFileId(null),
+                          });
+                        }}
+                        disabled={deletingFileId !== null}
+                        className="shrink-0 self-center p-2 rounded-lg text-slate-400 hover:text-red-600 hover:bg-red-50 border border-transparent hover:border-red-200 min-h-[44px] min-w-[44px] flex items-center justify-center touch-manipulation"
+                        title={t('rag.deleteDocument', 'Remove document from base and delete file')}
+                      >
+                        {deletingFileId === doc.fileId ? <Loader2 className="w-4 h-4 animate-spin" /> : <Trash2 className="w-4 h-4" />}
+                      </button>
                     </li>
                   );
                 })}
@@ -604,6 +626,7 @@ export default function RagChatbot() {
                     onClick={handleDeleteConversation}
                     disabled={!conversationId || deleteConversation.isPending}
                     title={t('rag.deleteConversation', 'Apagar esta conversa')}
+                    data-testid="delete-conversation-btn"
                   >
                     <Trash2 className="w-4 h-4 sm:mr-1" />
                     <span className="hidden sm:inline">{t('rag.delete', 'Apagar')}</span>

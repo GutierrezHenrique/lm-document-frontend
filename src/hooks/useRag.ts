@@ -71,6 +71,11 @@ export function useRag() {
     mutationFn: (conversationId: string) => api.rag.deleteConversation(conversationId),
   });
 
+  const deleteDocument = useMutation({
+    mutationFn: (fileId: string) => api.rag.deleteDocument(fileId),
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: RAG_DOCUMENTS_KEY }),
+  });
+
   const savePromptPreference = useMutation({
     mutationFn: ({ fileId, customInstructions }: { fileId: string; customInstructions: string | null }) =>
       api.rag.savePromptPreference(fileId, customInstructions),
@@ -84,6 +89,7 @@ export function useRag() {
     query,
     createConversation,
     deleteConversation,
+    deleteDocument,
     savePromptPreference,
   };
 }

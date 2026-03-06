@@ -88,7 +88,10 @@
         "selectDocumentToUnlock": "To send questions, select a document from the list (or Entire Knowledge Base). The question box is only enabled after you choose a document.",
         "hintNoDocs": "No documents yet. Open the Documents tab, add a file or paste text, then come back here and select it to chat.",
         "hintSelectDoc": "Select a document in the Documents tab (or Entire Knowledge Base) to enable sending questions.",
-        "placeholderDisabled": "Select a document in the Documents tab to enable…"
+        "placeholderDisabled": "Select a document in the Documents tab to enable…",
+        "deleteDocument": "Remove document from base and delete file",
+        "deleteDocumentConfirm": "Remove this document from the knowledge base and delete the file? This cannot be undone.",
+        "documentDeleted": "Document removed from the base and file deleted."
     },
     "ticket": {
         "title": "Ticket Classifier",

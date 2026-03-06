@@ -91,5 +91,9 @@ export const api = {
       request<{ success: boolean }>(`/rag/conversations/${encodeURIComponent(conversationId)}`, {
         method: 'DELETE',
       }),
+    deleteDocument: (fileId: string) =>
+      request<{ success: boolean }>(`/rag/documents/${encodeURIComponent(fileId)}`, {
+        method: 'DELETE',
+      }),
   },
 };
